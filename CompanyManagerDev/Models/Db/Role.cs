@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System.Text.Json.Serialization;
+using JsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 namespace CompanyManagerDev.Models.Db
 {
     [Table("roles")]
-    public class Role
+    public class Role : BaseEntity
     {
         [JsonProperty("id")]
         [Key, Column("id")]
@@ -18,8 +19,8 @@ namespace CompanyManagerDev.Models.Db
         public string? Description { get; set; }
         [JsonIgnore]
         public required Company Company { get; set; }
-        [JsonProperty("company_id")]
+        [JsonPropertyName("company_id")]
         [Column("company_id")]
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
     }
 }

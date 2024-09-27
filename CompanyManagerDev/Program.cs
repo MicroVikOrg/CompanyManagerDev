@@ -1,6 +1,8 @@
 using CompanyManagerDev.Models;
+using CompanyManagerDev.Models.Db;
 using CompanyManagerDev.Services;
 using Confluent.Kafka;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +27,11 @@ builder.Services.AddSingleton(producerConfig);
 builder.Services.AddSingleton<IProducer<Null, string>>(_ => new ProducerBuilder<Null, string>(producerConfig).Build());
 builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
 #endregion
-var app = builder.Build();
+string? connectionString = builder.Configuration["ConnectionString"];
 
+builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddTransient<IDbManagerFactory, DbManagerFactory>();
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
